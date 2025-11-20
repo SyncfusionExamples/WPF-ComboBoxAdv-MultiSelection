@@ -1,70 +1,117 @@
-# WPF-ComboBoxAdv-MultiSelection
-This repository contains the sample that how to select the items programmatically in WPF ComboBoxAdv.
+# WPF ComboBoxAdv MultiSelection
+This repository demonstrates how to select items programmatically in the Syncfusion WPF ComboBoxAdv control and enable multi-selection functionality.
 
-# Creating project
-Below section provides detailed information to create new project in Visual Studio to display ComboBoxAdv.
-# Adding control manually in XAML
-In order to add ComboBoxAdv control manually in XAML, do the below steps,
+## Why Use ComboBoxAdv MultiSelection?
+- Allows users to select multiple items from a dropdown list.
+- Supports data binding for dynamic item updates.
+- Ideal for scenarios like filtering, tagging, or multi-choice forms.
 
-1. Add the below required assembly references to the project,
+## Creating project
+Follow these steps to create a new WPF project in Visual Studio and add the ComboBoxAdv control:
 
-   * Syncfusion.Shared.WPF
-2. Import Syncfusion WPF schema http://schemas.syncfusion.com/wpf in XAML page or Syncfusion.Windows.Tools.Controls namespace.
+### Adding Control Manually in XAML
 
-3. Declare ComboBoxAdv in XAML page.
-**[XAML]**
+1. Add the required assembly reference:
+   - Syncfusion.Shared.WPF
 
+2. Import the Syncfusion WPF schema:
+```XAML
+xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
 ```
- <Grid>
-      <syncfusion:ComboBoxAdv Height="30" Width="150"/>
- </Grid>
+
+3. Declare the ComboBoxAdv in XAML:
+```XAML
+<Grid>
+    <syncfusion:ComboBoxAdv Height="30" Width="150"/>
+</Grid>
 ```
 
-# Adding control manually in C#
-In order to add ComboBoxAdv control manually in C#, do the below steps,
+### Adding Control Manually in C#
 
-1. Add the below required assembly references to the project,
+1. Add the required assembly reference:
+   - Syncfusion.Shared.WPF
 
-    * Syncfusion.Shared.WPF
-
-2. Import ComboBoxAdv namespace Syncfusion.Windows.Tools.Controls.
-
-3. Create ComboBoxAdv control instance and add it to the page.
-
-
-**[C#]**
+2. Import the namespace:
+```C#
+using Syncfusion.Windows.Tools.Controls;
 ```
+
+3. Create and configure the ComboBoxAdv instance:
+```C#
 public partial class MainWindow : Window
 {
     public MainWindow()
     {
         InitializeComponent();
-        ComboBoxAdv comboBoxAdv = new ComboBoxAdv();
+        ComboBoxAdv comboBoxAdv = new ComboBoxAdv
+        {
+            Height = 30,
+            Width = 150,
+            DefaultText = "Choose Items"
+        };
         this.Content = comboBoxAdv;
-        comboBoxAdv.Height = 30;
-        comboBoxAdv.Width = 150;
-        comboBoxAdv.DefaultText = "choose Items";
     }
 }
 ```
-#   ComboBoxAdv MultiSelection
+## ComboBoxAdv MultiSelection Example
+Enable multi-selection and bind data using MVVM:
 
 **[XAML]**
+```XAML
+<Window.DataContext>
+    <local:ViewModel />
+</Window.DataContext>
 
+<Grid>
+    <syncfusion:ComboBoxAdv DisplayMemberPath="Name"
+                             SelectedItems="{Binding SelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             AllowMultiSelect="True"
+                             Name="comboboxadv"
+                             HorizontalAlignment="Center"
+                             Height="30"
+                             VerticalAlignment="Center"
+                             Width="150"
+                             ItemsSource="{Binding Countries}"/>
+</Grid>
 ```
-<syncfusion:ComboBoxAdv DisplayMemberPath="Name"  
-                        SelectedItems="{Binding SelectedItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                        AllowMultiSelect="True" Name="comboboxadv"  HorizontalAlignment="Center" Height="30"  
-                        VerticalAlignment="Center" Width="150" ItemsSource="{Binding Countries}"/>
+**ViewModel**
+```C#
+public class ViewModel : INotifyPropertyChanged
+{
+    private ObservableCollection<object> selectedItems;
+    public ObservableCollection<object> SelectedItems
+    {
+        get => selectedItems;
+        set
+        {
+            selectedItems = value;
+            RaisePropertyChanged(nameof(SelectedItems));
+        }
+    }
+
+    public ObservableCollection<Country> Countries { get; set; }
+
+    public ViewModel()
+    {
+        Countries = new ObservableCollection<Country>
+        {
+            new Country() { Name = "Denmark" },
+            new Country() { Name = "New Zealand" },
+            new Country() { Name = "Canada" },
+            new Country() { Name = "Russia" },
+            new Country() { Name = "Japan" }
+        };
+
+        SelectedItems = new ObservableCollection<object>(Countries.Take(2));
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void RaisePropertyChanged(string propertyName)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
+
+public class Country
+{
+    public string Name { get; set; }
+}
 ```
-## How to run this application?
-
-To run this application, you need to first clone the WPF-ComboBoxAdv-MultiSelection repository and then open it in Visual Studio 2022. Now, simply build and run your project to view the output.
-
-## <a name="troubleshooting"></a>Troubleshooting ##
-### Path too long exception
-If you are facing path too long exception when building this example project, close Visual Studio and rename the repository to short and build the project.
-
-## License
-
-Syncfusion has no liability for any damage or consequence that may arise by using or viewing the samples. The samples are for demonstrative purposes, and if you choose to use or access the samples, you agree to not hold Syncfusion liable, in any form, for any damage that is related to use, for accessing, or viewing the samples. By accessing, viewing, or seeing the samples, you acknowledge and agree Syncfusion’s samples will not allow you seek injunctive relief in any form for any claim related to the sample. If you do not agree to this, do not view, access, utilize, or otherwise do anything with Syncfusion’s samples.
